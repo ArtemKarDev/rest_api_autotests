@@ -12,17 +12,20 @@ compileTestJava {
 
 dependencies {
     testImplementation(
-            "com.codeborne:selenide:6.19.1",
+            "io.rest-assured:rest-assured:5.3.1",
             "org.junit.jupiter:junit-jupiter:5.10.0",
-            'org.slf4j:slf4j-simple:2.0.7',
-            "io.rest-assured:rest-assured:5.1.0"
+            "org.slf4j:slf4j-simple:2.0.7"
+
     )
 }
 
-test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-        exceptionFormat "full"
-    }
+tasks.withType(Test) {
     useJUnitPlatform()
+
+    testLogging {
+        lifecycle {
+            events "started", "skipped", "failed", "standard_error", "standard_out"
+            exceptionFormat "short"
+        }
+    }
 }
