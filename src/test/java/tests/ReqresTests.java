@@ -3,15 +3,22 @@ package tests;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
+import models.UserDataModel;
+import models.UserDataResModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static helpers.CustomApiListener.withCustomTemplates;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static specs.LoginSpec.loginResponseSpec;
+import static specs.UserSpec.UserRequestSpec;
+import static specs.UserSpec.UserResponseCreateSpec;
 
 @Tag("reqres_tests")
 @DisplayName("Тестирование сайта https://reqres.in/")
@@ -24,26 +31,26 @@ public class ReqresTests {
         RestAssured.basePath = "/api";
     }
 
-    @DisplayName("Создание нового пользователя кода ответа 201")
+    @DisplayName("Создание нового пользователя.")
     @Test
     void successfulCreatedUserTest() {
-        String bodyData = "{\"name\": \"amongus_red\", \"job\": \"killer\"}";
+        UserDataModel userData = new UserDataModel();
+        userData.setName("amongus_red");
+        userData.setJob("killer");
 
-        given()
-                .filter(new AllureRestAssured())
-                .body(bodyData)
-                .contentType(JSON)
-                .log().uri()
-
+        UserDataResModel response = step("Отправка запроса.", () ->
+                given(UserRequestSpec)
+                    .body(userData)
                 .when()
-                .post("/users")
-
+                    .post("/users")
                 .then()
-                .log().status()
-                .log().body()
-                .statusCode(201)
-                .body("name", is("amongus_red"))
-                .body("job", is("killer"));
+                    .spec(UserResponseCreateSpec)
+                    .extract().as(UserDataResModel.class));
+
+        step("Проверка ответа.", () -> {
+            assertEquals(userData.getJob(), response.getJob());
+            assertEquals(userData.getName(), response.getName());
+        });
     }
 
 
@@ -52,8 +59,9 @@ public class ReqresTests {
     void checkUserListItemsCount() {
         given()
                 .log().uri()
-                .get( "/users?page=2")
-                .then()
+            .when()
+                .get("/users?page=2")
+            .then()
                 .log().status()
                 .log().body()
                 .statusCode(200)
@@ -68,13 +76,13 @@ public class ReqresTests {
         given()
                 .log().uri()
                 .get("/unknown/23")
-                .then()
+            .then()
                 .log().status()
                 .log().body()
                 .statusCode(404);
     }
 
-    @DisplayName("Проверка не валюдной авторизации пользователя")
+    @DisplayName("Проверка не валидной авторизации пользователя")
     @Test
     void loginUserUnsuccessfulTest() {
         String postLoginData = "{\"email\": \"amongus@killer\"}";
@@ -85,7 +93,7 @@ public class ReqresTests {
                 .log().uri()
 
                 .when()
-                .post( "/login")
+                .post("/login")
 
                 .then()
                 .log().status()
@@ -100,7 +108,7 @@ public class ReqresTests {
     void checkEmailTest() {
         given()
                 .log().uri()
-                .get( "/users/7")
+                .get("/users/7")
                 .then()
                 .log().status()
                 .log().body()
