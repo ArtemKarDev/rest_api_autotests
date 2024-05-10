@@ -1,19 +1,22 @@
 package tests;
 
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static helpers.CustomApiListener.withCustomTemplates;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 
+@Tag("reqres_tests")
 @DisplayName("Тестирование сайта https://reqres.in/")
 
 public class ReqresTests {
-    //String BASE_URL = "https://reqres.in/";
 
     @BeforeAll
     public static void setUp() {
@@ -27,6 +30,7 @@ public class ReqresTests {
         String bodyData = "{\"name\": \"amongus_red\", \"job\": \"killer\"}";
 
         given()
+                .filter(new AllureRestAssured())
                 .body(bodyData)
                 .contentType(JSON)
                 .log().uri()
@@ -39,8 +43,7 @@ public class ReqresTests {
                 .log().body()
                 .statusCode(201)
                 .body("name", is("amongus_red"))
-                .body("job", is("killer"))
-        ;
+                .body("job", is("killer"));
     }
 
 
