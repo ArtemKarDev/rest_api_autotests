@@ -1,6 +1,8 @@
 package tests;
 
 
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,12 +10,16 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 
-import org.hamcrest.Matchers;
-
 @DisplayName("Тестирование сайта https://reqres.in/")
 
 public class ReqresTests {
-    String BASE_URL = "https://reqres.in/";
+    //String BASE_URL = "https://reqres.in/";
+
+    @BeforeAll
+    public static void setUp() {
+        RestAssured.baseURI = "https://reqres.in/";
+        RestAssured.basePath = "/api";
+    }
 
     @DisplayName("Создание нового пользователя кода ответа 201")
     @Test
@@ -26,7 +32,7 @@ public class ReqresTests {
                 .log().uri()
 
                 .when()
-                .post(BASE_URL + "api/users")
+                .post("/users")
 
                 .then()
                 .log().status()
@@ -43,7 +49,7 @@ public class ReqresTests {
     void checkUserListItemsCount() {
         given()
                 .log().uri()
-                .get(BASE_URL + "api/users?page=2")
+                .get( "/users?page=2")
                 .then()
                 .log().status()
                 .log().body()
@@ -58,7 +64,7 @@ public class ReqresTests {
     void checkCode404() {
         given()
                 .log().uri()
-                .get(BASE_URL + "api/unknown/23")
+                .get("/unknown/23")
                 .then()
                 .log().status()
                 .log().body()
@@ -76,7 +82,7 @@ public class ReqresTests {
                 .log().uri()
 
                 .when()
-                .post(BASE_URL + "api/login")
+                .post( "/login")
 
                 .then()
                 .log().status()
@@ -91,7 +97,7 @@ public class ReqresTests {
     void checkEmailTest() {
         given()
                 .log().uri()
-                .get(BASE_URL + "api/users/7")
+                .get( "/users/7")
                 .then()
                 .log().status()
                 .log().body()
