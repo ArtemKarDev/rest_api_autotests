@@ -24,4 +24,10 @@ public class LoginSpec {
              .log(BODY)
              .build();
 
+     public static ResponseSpecification loginResponse400Spec = new ResponseSpecBuilder()
+             .expectStatusCode(400)
+             .log(STATUS)
+             .log(BODY)
+             .build();
+
 }
