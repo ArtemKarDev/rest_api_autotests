@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class UserDataModel {
-    String name, job;
+    String name, job, email, id;
+
 }

@@ -19,8 +19,24 @@ public class UserSpec {
             .log().headers()
             .contentType(JSON);
 
+    public static RequestSpecification UnknownRequestSpec = with()
+            .filter(new AllureRestAssured())
+            .log().uri();
+
+    public static ResponseSpecification UnknownResponseSpec = new ResponseSpecBuilder()
+            .expectStatusCode(404)
+            .log(STATUS)
+            .log(BODY)
+            .build();
+
     public static ResponseSpecification UserResponseCreateSpec = new ResponseSpecBuilder()
             .expectStatusCode(201)
+            .log(STATUS)
+            .log(BODY)
+            .build();
+
+    public static ResponseSpecification UsersListResponseSpec = new ResponseSpecBuilder()
+            .expectStatusCode(200)
             .log(STATUS)
             .log(BODY)
             .build();
