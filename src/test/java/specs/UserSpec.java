@@ -14,14 +14,14 @@ import static io.restassured.http.ContentType.JSON;
 public class UserSpec {
 
     public static RequestSpecification userRequestSpec = with()
-            .filter(withCustomTemplates())
+            .filter(new AllureRestAssured())
             .log().uri()
             .log().body()
             .log().headers()
             .contentType(JSON);
 
     public static RequestSpecification unknownRequestSpec = with()
-            .filter(withCustomTemplates())
+            .filter(new AllureRestAssured())
             .log().uri();
 
     public static ResponseSpecification unknownResponseSpec = new ResponseSpecBuilder()
