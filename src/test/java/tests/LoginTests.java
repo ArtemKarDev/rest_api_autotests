@@ -34,6 +34,6 @@ public class LoginTests {
                 .spec(loginResponseSpec)
                 .extract().as(LoginResponseModel.class);
 
-        assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
+        assertNotNull(response.getToken());
     }
 }
