@@ -1,6 +1,5 @@
 package specs;
 
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -14,14 +13,14 @@ import static io.restassured.http.ContentType.JSON;
 public class UserSpec {
 
     public static RequestSpecification userRequestSpec = with()
-            .filter(new AllureRestAssured())
+            .filter(withCustomTemplates())
             .log().uri()
             .log().body()
             .log().headers()
             .contentType(JSON);
 
     public static RequestSpecification unknownRequestSpec = with()
-            .filter(new AllureRestAssured())
+            .filter(withCustomTemplates())
             .log().uri();
 
     public static ResponseSpecification unknownResponseSpec = new ResponseSpecBuilder()
