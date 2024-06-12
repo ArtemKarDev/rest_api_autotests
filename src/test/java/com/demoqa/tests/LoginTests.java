@@ -50,8 +50,8 @@ public class LoginTests extends TestBase{
                     .extract().response();
 
             open("/gplaypattern.jpg");
-            getWebDriver().manage().addCookie(new Cookie("userId",authResponse.path("userId")));
-            getWebDriver().manage().addCookie(new Cookie("username",authResponse.path("username")));
+            getWebDriver().manage().addCookie(new Cookie("userID",authResponse.path("userId")));
+            getWebDriver().manage().addCookie(new Cookie("expires",authResponse.path("expires")));
             getWebDriver().manage().addCookie(new Cookie("token",authResponse.path("token")));
         });
 
