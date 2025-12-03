@@ -1,9 +1,7 @@
 package tests;
 
-import io.restassured.RestAssured;
 import models.*;
 import models.LoginBodyModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,13 +16,9 @@ import static specs.UserSpec.*;
 @Tag("reqres_tests")
 @DisplayName("Тестирование сайта https://reqres.in/")
 
-public class ReqresTests {
+public class ReqresTests extends BaseTest {
 
-    @BeforeAll
-    public static void setUp() {
-        RestAssured.baseURI = "https://reqres.in/";
-        RestAssured.basePath = "/api";
-    }
+
 
     @DisplayName("Создание нового пользователя.")
     @Test
