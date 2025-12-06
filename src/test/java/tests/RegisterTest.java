@@ -1,6 +1,7 @@
 package tests;
 
 import models.RegistrationBodyModel;
+import models.RegistrationResponseError400Model;
 import models.RegistrationResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -32,12 +33,9 @@ public class RegisterTest extends BaseTest {
                         .extract().as(RegistrationResponseModel.class));
 
         step("Check response.", () -> {
-            assertEquals(200, response.getToken());
-            assertEquals(4, response.getId());
+            assertEquals("QpwL5tke4Pnpja7X4", response.getToken());
+            assertEquals("4", response.getId());
         });
-
-
-
 
     }
 
@@ -49,20 +47,18 @@ public class RegisterTest extends BaseTest {
         regData.setEmail("paradigma@reqres.in");
         //regData.setPassword("paradigma");
 
-        RegistrationResponseModel response = step("Sent request to registration.", () ->
+        RegistrationResponseError400Model response = step("Sent request to registration.", () ->
                 given(requestSpec)
                         .body(regData)
                         .when()
                         .post("/register")
                         .then()
                         .spec(responseSpec(400))
-                        .extract().as(RegistrationResponseModel.class));
+                        .extract().as(RegistrationResponseError400Model.class));
 
         step("Check response.", () -> {
-            assertEquals(400, response.getToken());
-            assertEquals(4, response.getId());
+            assertEquals("Missing password", response.getError());
         });
-
 
     }
 

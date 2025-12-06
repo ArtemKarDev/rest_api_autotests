@@ -3,14 +3,13 @@ package tests;
 import io.restassured.RestAssured;
 import models.LoginBodyModel;
 import models.LoginResponseModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static specs.LoginSpec.loginRequestSpec;
-import static specs.LoginSpec.loginResponseSpec;
+import static specs.BaseSpec.requestSpec;
+import static specs.BaseSpec.responseSpec;
 
 public class LoginTests extends BaseTest {
 
@@ -22,14 +21,14 @@ public class LoginTests extends BaseTest {
         authData.setPassword("cityslicka");
 
         LoginResponseModel response = step("Отправка запроса авторизации.", () ->
-                given(loginRequestSpec)
+                given(requestSpec)
                 .body(authData)
 
             .when()
                 .post( "/login")
 
             .then()
-                .spec(loginResponseSpec)
+                .spec(responseSpec(200))
                 .extract().as(LoginResponseModel.class));
 
         step("Проверка ответа", () ->

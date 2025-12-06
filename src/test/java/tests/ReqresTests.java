@@ -10,30 +10,30 @@ import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static specs.LoginSpec.*;
-import static specs.UserSpec.*;
+import static specs.BaseSpec.requestSpec;
+import static specs.BaseSpec.responseSpec;
 
 @Tag("reqres_tests")
-@DisplayName("Тестирование сайта https://reqres.in/")
+@DisplayName("API tests for https://reqres.in/")
 
 public class ReqresTests extends BaseTest {
 
 
 
-    @DisplayName("Создание нового пользователя.")
+    @DisplayName("Create user (201)")
     @Test
     void successfulCreatedUserTest() {
         UserDataCreatedModel userData = new UserDataCreatedModel();
         userData.setName("amongus_red");
         userData.setJob("killer");
 
-        UserDataCreatedResModel response = step("Отправка запроса.", () ->
-                given(userRequestSpec)
+        UserDataCreatedResModel response = step("Send request.", () ->
+                given(requestSpec)
                         .body(userData)
                         .when()
                         .post("/users")
                         .then()
-                        .spec(userResponseCreateSpec)
+                        .spec(responseSpec(201))
                         .extract().as(UserDataCreatedResModel.class));
 
         step("Проверка ответа.", () -> {
@@ -43,30 +43,30 @@ public class ReqresTests extends BaseTest {
     }
 
 
-    @DisplayName("Проверка пагинации страницы пользователей - выводит 6 пользователей (код 200)")
+    @DisplayName("Check paging user list - output 6 items")
     @Test
     void checkUserListItemsCount() {
-        step("Отправка запроса.", () ->
-                given(userRequestSpec)
+        step("Send request.", () ->
+                given(requestSpec)
                         .when()
                         .get("/users?page=2")
                         .then()
-                        .spec(usersListResponseSpec)
+                        .spec(responseSpec(200))
                         .time(lessThan(1500L))
                         .body("data.findall.size()", equalTo(6)));
     }
 
-    @DisplayName("Проверка кода ответа - NOT FOUND")
+    @DisplayName("Check unknown endpoint - NOT FOUND")
     @Test
     void checkCode404() {
-        given(unknownRequestSpec)
+        given(requestSpec)
                 .get("/unknown/23")
                 .then()
-                .spec(unknownResponseSpec)
+                .spec(responseSpec(404))
                 .extract().as(UserDataResModel.class);
     }
 
-    @DisplayName("Проверка авторизации несуществующего пользователя")
+    @DisplayName("Check authorization of incorrect user")
     @Test
     void loginNotUserUnsuccessfulTest() {
 
@@ -74,21 +74,21 @@ public class ReqresTests extends BaseTest {
         authData.setEmail("amongus@killer");
         authData.setPassword("cityslicka");
 
-        LoginErrorModel response = step("Отправка запроса.", () ->
-                given(loginRequestSpec)
+        LoginErrorModel response = step("Send request.", () ->
+                given(requestSpec)
                         .body(authData)
                         .when()
                         .post("/login")
                         .then()
-                        .spec(loginResponse400Spec)
+                        .spec(responseSpec(400))
                         .extract().as(LoginErrorModel.class));
 
-        step("Проверка ответа.", () -> {
+        step("Check response..", () -> {
             assertEquals("user not found", response.getError());
         });
     }
 
-    @DisplayName("Проверка авторизации пользователя с неверным паролем")
+    @DisplayName("Check authorization of user incorrect password")
     @Test
     void loginUserUnsuccessfulTest() {
 
@@ -96,37 +96,37 @@ public class ReqresTests extends BaseTest {
         authData.setEmail("eve.holt@reqres.in");
         //authData.setPassword("pass");
 
-        LoginErrorModel response = step("Отправка запроса.", () ->
-                given(loginRequestSpec)
+        LoginErrorModel response = step("Send request.", () ->
+                given(requestSpec)
                         .body(authData)
                         .when()
                         .post("/login")
                         .then()
-                        .spec(loginResponse400Spec)
+                        .spec(responseSpec(400))
                         .extract().as(LoginErrorModel.class));
 
-        step("Проверка ответа.", () -> {
+        step("Check response.", () -> {
             assertEquals("Missing password", response.getError());
         });
 
     }
 
 
-    @DisplayName("Проверка email у пользователя")
+    @DisplayName("Check email of user")
     @Test
     void checkEmailTest() {
         UserDataModel userData = new UserDataModel();
         userData.setEmail("michael.lawson@reqres.in");
 
-        UserDataResModel response = step("Отправка запроса.", () ->
-                given(userRequestSpec)
+        UserDataResModel response = step("Send request.", () ->
+                given(requestSpec)
                         .when()
                         .get("/users/7")
                         .then()
-                        .spec(usersListResponseSpec)
+                        .spec(responseSpec(200))
                         .extract().as(UserDataResModel.class));
 
-        step("Проверка ответа.", () -> {
+        step("Check response.", () -> {
             assertEquals(userData.getEmail(), response.getData().getEmail());
         });
 
