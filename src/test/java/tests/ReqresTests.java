@@ -49,7 +49,8 @@ public class ReqresTests extends BaseTest {
         step("Send request.", () ->
                 given(requestSpec)
                         .when()
-                        .get("/users?page=2")
+                        .queryParam("page", 2)
+                        .get("/users")
                         .then()
                         .spec(responseSpec(200))
                         .time(lessThan(1500L))
